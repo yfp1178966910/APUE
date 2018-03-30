@@ -37,7 +37,7 @@ int main()
 		errno("fork");
 	else if ( pid == 0 )  // 子进程
 	{
-		*p = 2000;
+		//*p = 2000;
 		var = 1000;
 		printf(" child.. offset = %d .. var = %d\n", *p, var);
 	}

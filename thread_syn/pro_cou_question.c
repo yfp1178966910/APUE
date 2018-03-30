@@ -21,13 +21,9 @@ void *con(void *arg)
 	while(1)
 	{
 		pthread_mutex_lock(&mutex);
-		while (head == NULL)
+		while (head == NULL)  // 此时没有物品
 		{
-			pthread_cond_wait(&cond, &mutex);  // 循环查看当前容器内有没有物品，
-			/*
-			 * 1. 如果没有物品，那么消费者线程全部则色
-			 * 2. 解锁mutex
-			 * 3. 等待被唤醒，一旦被唤醒。循环消费*/
+			pthread_cond_wait(&cond, &mutex);     // 等待条件变真，并且解锁互斥量，将调用线程置于等待条件的线程列表内。等待被唤醒。线程阻塞状态. 一旦开始有物品，此线程被唤醒，循环结束，开始消费。
 		}
 		mp = head;
 		head = mp->next;

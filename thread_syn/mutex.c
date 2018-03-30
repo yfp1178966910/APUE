@@ -31,7 +31,22 @@ int main()
 	srand(time(NULL));
 	pthread_mutex_init(&mutex, NULL);  // mutex = 1
 
-	pthread_create(&tid, NULL, fuc, NULL);
+
+    int i=1, detachstate, ret;
+    pthread_t tid_1;
+    pthread_attr_t attr;
+    size_t stacksize;
+    void *stackaddr;
+
+    pthread_attr_init(&attr);
+    pthread_attr_getstack(&attr, &stackaddr, &stacksize);
+    pthread_attr_getdetachstate(&attr, &detachstate);
+
+    if(detachstate != PTHREAD_CREATE_DETACHED)
+        pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+
+
+	pthread_create(&tid, &attr, fuc, NULL);
 	
 	while (1)
 	{

@@ -33,7 +33,8 @@ int main()
 
 	// 使用stu类型的指针执行已经建议的映射区
 	struct stu  *m;
-	m = mmap(NULL, sizeof(student), PROT_READ, MAP_SHARED, fd, 0);
+	// m = mmap(NULL, sizeof(student), PROT_READ, MAP_SHARED, fd, 0);
+	m = mmap(NULL, 2*2*sizeof(student), PROT_READ, MAP_PRIVATE, fd, 0);
 	close(fd);
 
 	while(1)

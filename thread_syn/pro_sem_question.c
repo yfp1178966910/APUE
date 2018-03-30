@@ -16,6 +16,7 @@ void *con(void *arg)
 	while(1)
 	{
 		sem_wait(&pro_number);  // 产品数减少
+                                // pro_number为0时，线程阻塞，等待pro_number增加。
 		printf("consume --- %d\n", queue[i]);
 		queue[i] = 0;
 		sem_post(&blank_number); // 需求增加

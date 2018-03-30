@@ -4,8 +4,7 @@
  *2.  对映射区内数据修改
  *3、 注意文件截断
  * 
- *
- *注意映射区权限
+ * 注意映射区权限
  * */
 
 
@@ -36,7 +35,7 @@ int main()
 	}
 
 	char *m;
-	ftruncate(fd, sizeof(student));
+	ftruncate(fd, sizeof(student)); // 截断，一段数据一段数据的写入。
 	m = mmap(NULL, sizeof(student), PROT_WRITE | PROT_READ, MAP_SHARED, fd, 0);
 	close(fd);
 

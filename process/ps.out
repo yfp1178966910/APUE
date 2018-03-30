@@ -1,6 +1,10 @@
-   PID TTY      STAT   TIME COMMAND
-   709 tty1     Ss+    0:00 /sbin/agetty --noclear tty1 linux
-  2883 pts/0    Ss     0:00 -bash
-  3203 pts/0    S+     0:00 ./exec_pro
-  3204 pts/0    R+     0:00 ps a
+test ... pid == 16724.. 
+
+
+
+
+ child .. 
+  PID TTY          TIME CMD
+16723 pts/0    00:00:00 exec_pro
+16724 pts/0    00:00:00 ps
 test buf

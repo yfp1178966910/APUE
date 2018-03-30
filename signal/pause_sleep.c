@@ -38,7 +38,8 @@ unsigned int mysleep(unsigned int seconds)
 	
 	alarm(seconds); // 会产生竟态时序问题，因为调用完定时器后CPU背抢走，那么SIGALRM就回提前产生，但是pasue接收不到，就不会被唤醒。
 
-	sleep(3);  // 3s 和 1s 是不同的。
+	// sleep(3);  // 3s 和 1s 是不同的。  测试CPU被抢走的情况以重现竟态时序问题。
+
 	ret = pause();  // pasue执行条件是，等到信号唤醒，并且信号的处理动作被捕捉，
 	if (ret == -1 && errno == EINTR)
 	{
@@ -57,7 +58,7 @@ int main()
 	printf("... start ...\n");
 	while (1)
 	{	
-		mysleep(3);
+		mysleep(5);
 		printf("sleeping ...\n");
 	}
 	return 0;

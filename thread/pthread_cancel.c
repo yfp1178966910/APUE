@@ -19,11 +19,14 @@ void *fuc2(void *arg)
 
 void *fuc3(void *arg)
 {
+    int ret = (int)ret;
+    ret++;
 	while(1)
 	{
-		pthread_testcancel(); 	
+		pthread_testcancel(); // 从这里开始就已经死亡 	
 	}
-	return (void *)3;
+    printf("thread 3 testcancal\n");
+	return (void *)ret;
 }
 
 int main()
@@ -40,9 +43,9 @@ int main()
 	//pthread_cancel(tid); // 已经进行了回收，再杀死，则会产生段错误
 	printf("%d\n", (int)ret);
 
-	pthread_create(&tid, NULL, fuc3, NULL);
+	pthread_create(&tid, NULL, fuc3, (void*)ret);
 	pthread_cancel(tid); // 杀死线程，需要取消点。一般是系统调用	
-	pthread_join(tid, (void **)&ret); // 杀死之后在回收，则回收不到。
+	//pthread_join(tid, (void **)&ret); // 杀死之后在回收，则回收不到。
 	printf("%d\n", (int)ret);
 
 	pthread_exit(NULL);	

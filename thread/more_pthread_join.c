@@ -53,7 +53,7 @@ int main()
 	for(i=0; i<5; i++)
 	{
 		pthread_join(tid[i], (void **)&ret[i]);
-		// ret用来存储线程退出值(void *)类型，所以必须用二级指针接收，并且需要指向地址值
+		// ret用来存储线程退出值(void *)类型，所以用二级指针接收，并且指向地址值
 		// 所以需要用 取地址值，并且ret的定义是指针类型。
 		printf("-----%d ret = %d\n", i, (int)ret[i]);
 	}

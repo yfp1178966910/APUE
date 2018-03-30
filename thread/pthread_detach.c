@@ -23,6 +23,6 @@ int main()
 	
 	ret = pthread_join(tid, (void **)i);
 	if ( ret != 0 )
-		fprintf(stderr, "%d\n", ret);
+		fprintf(stderr, "%d\n", ret); // 失败返回错误编号
 	pthread_exit(NULL);	
 }

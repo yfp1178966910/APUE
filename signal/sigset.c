@@ -49,8 +49,9 @@ int main()
 		exit(1);
 	}
 	while(1){	
+        sleep(1);
 		sigpending(&ped);  // 读阻塞状态
-		printped(&ped);
+		printped(&ped);   // 信号产生，信号字影响未决信号集。
 	}
 	return 0;
 }

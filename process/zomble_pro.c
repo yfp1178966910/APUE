@@ -1,3 +1,11 @@
+
+/*
+ * 僵尸进程：子进程先死亡，父进程没有回收
+ *
+ * */
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -13,8 +21,9 @@ int main()
 	else if ( pid == 0)
 	{
 		printf(" -- child -- parent is %d\n", getppid());
-		sleep(10);
-		printf(" -- child die -- \n");
+		sleep(10); 
+		printf(" -- child %d die -- \n", getpid());
+
 	}
 	else
 	{

@@ -1,11 +1,18 @@
 /*
+ * 竟态时序问题：
+ * alarm函数后，由于竟态时序问题，CPU被抢，alarm结束后产生的信号被忽略，进程会一直陷入睡眠。
  *
- * 1. 自定义信号集影响屏蔽字，并且加入了SIGALRM信号，同事也定义了一个信号集，删掉了SIGALRM信号。
- * 2. alarm函数后，由于竟态时序问题，那么会一直嵌入睡眠，接收不到SIGALRM信号。
- * 3. 程序运行到sigsuspend函数，此时使用无SIGALRM信号的信号集。
- * 4. sigsuspend调用结束，开始使用有SIGALRM的信号集，则此时进程会受到SIGALRM信号，程序被唤醒。
+ * 解决： sigsuspend(原子操作)
  *
+ * 1. 自定义信号集影响屏蔽字，并且加入了SIGALRM信号，同时也定义了一个信号集，删掉了SIGALRM信号。
+ * 2. sigsuspend之前阻塞SIGALRM信号，产生此信号便处于待处理状态。
+ * 3. CPU恢复后，此时解除对SIGALRM信号的屏蔽，
+ * 4. 此时进程会开始处理SIGALRM信号。
  *
+ * 考虑使用sigsuspend 这个原子操作的函数原因？
+ * 若从一开始便阻塞SIGALRM信号，等到CPU恢复后解除阻塞，也可以解决SIGALRM这个问题。
+ * 但是，此程序是针对SIGALRM信号。信号产生的时刻是固定的，
+ * 若信号产生在解除阻塞和进程唤醒之间，则还是会陷入竟态时序问题。
  * */
 
 
@@ -46,6 +53,7 @@ unsigned int mysleep(unsigned int seconds)
 	}
 	
 	alarm(seconds);
+
 	// 确保sigsuspend函数中使用的屏蔽信号集中SIGALRM是未被屏蔽的
 	suspmask = oldmask; 
 	sigdelset(&suspmask, SIGALRM);
@@ -53,8 +61,8 @@ unsigned int mysleep(unsigned int seconds)
  * 	sigsuspend调用期间，采用临时阻塞信号suspmask替换原有的阻塞信号集，
  * 	这个信号中屏蔽SIGALRM信号，当sigsuspend被信号唤醒返回时，恢复原有的阻塞信号集， sigsuspend是一个系统函数，是一个原子操作。
  * 	*/
-	sleep(seconds);
-	sigsuspend(&suspmask);	
+	sleep(seconds); // cpu被抢，此时信号字内有SIGALRM, 并且alarm产生了SIGALRM信号，被屏蔽，处于等待处理状态
+	sigsuspend(&suspmask);	// cpu返回之后， 恢复原来的信号字，不再屏蔽SIGALRM，所以开始处理SIGALRM信号。
 
 	
 	ret = alarm(0);

@@ -1,8 +1,8 @@
 /*
  * 死锁
  *
- * 1. 子进程先锁B，然后在锁A， 
- * 2. 父进程先锁A，然后在锁B
+ * 1. 子线程先锁B，然后再锁A， 此时子线程发现A正在被人使用，等待、 
+ * 2. 主线程先锁A，然后再锁B。 此时主线程发现B正在被人使用，等待。
  *
  * */
 
@@ -24,10 +24,10 @@ void *fuc(void *arg)
 		pthread_mutex_lock(&mutexB);
 		printf("fun B\n");
 		sleep(rand() % 3);
-		//pthread_mutex_unlock(&mutexB);
-		//pthread_mutex_lock(&mutexA);
+		pthread_mutex_lock(&mutexA);
 		printf("fun A\n");
 		sleep(rand() % 3);
+		pthread_mutex_unlock(&mutexB);
 		pthread_mutex_unlock(&mutexA);
 	}
 	return NULL;
@@ -51,9 +51,10 @@ int main()
 		printf("main A\n");
 		sleep(rand() % 3);
 		//pthread_mutex_unlock(&mutexA);
-		//pthread_mutex_lock(&mutexB);
+		pthread_mutex_lock(&mutexB);
 		printf("main B\n");
 		sleep(rand() % 3);
+		pthread_mutex_unlock(&mutexA);
 		pthread_mutex_unlock(&mutexB);
 		
 	}

@@ -31,7 +31,7 @@ int main()
 	{
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
-		execlp("ls", "ls", NULL);
+		execlp("ls", "ls", "-a", NULL);
 	}
 	// 父进程关闭写端，打开读端，以标准输入的方式将管道内的数据读出
 	else if ( pid > 0 ) 
